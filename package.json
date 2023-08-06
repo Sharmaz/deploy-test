@@ -1,0 +1,22 @@
+{
+  "name": "deploy-test",
+  "version": "0.1.0",
+  "description": "Test github actions deploy to server instance.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sharmaz/deploy-test.git"
+  },
+  "author": "Ivan Robles <irae45@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sharmaz/deploy-test/issues"
+  },
+  "homepage": "https://github.com/Sharmaz/deploy-test#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
