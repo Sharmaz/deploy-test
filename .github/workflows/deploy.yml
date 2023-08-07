@@ -15,7 +15,11 @@ jobs:
           password: ${{secrets.SSH_PASSWORD}} # User password
 
           script: |
+            cd /var/www
+            rm -rf test
             mkdir test
             cd test
             git clone git@github.com:Sharmaz/deploy-test.git
             echo 'Deployment succesful'
+            npm install
+            node index.js NODE_ENV=production PORT=3006
