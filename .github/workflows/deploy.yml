@@ -16,6 +16,8 @@ jobs:
 
           script: |
             cd /var/www
+            pm2 stop deploy-test
+            pm2 delete deploy-test
             rm -rf test
             mkdir test
             cd test
@@ -23,4 +25,4 @@ jobs:
             echo 'Deployment succesful'
             cd deploy-test
             npm install
-            node index.js NODE_ENV=production PORT=3006
+            NODE_ENV=${{secrets.NODE_ENV}} PORT=${{secrets.PORT}} pm2 start index.js --name deploy-test
