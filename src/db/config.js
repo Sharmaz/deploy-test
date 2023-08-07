@@ -16,5 +16,10 @@ module.exports = {
     host: config.dbHost,
     port: config.dbPort,
     dialect: 'mysql',
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
   }
 };
