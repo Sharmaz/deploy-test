@@ -25,6 +25,7 @@ jobs:
             echo 'Deployment succesful'
             cd deploy-test
             npm install
+            ./deploy_test.sh
             NODE_ENV=${{secrets.NODE_ENV}} PORT=${{secrets.PORT}} DB_USER=${{secrets.DB_USER}} DB_PASSWORD=${{secrets.DB_PASSWORD}} DB_HOST=${{secrets.DB_HOST}} DB_NAME=${{secrets.DB_NAME}} DB_PORT=${{secrets.DB_PORT}} pm2 start index.js --name deploy-test
             NODE_ENV=${{secrets.NODE_ENV}} DB_USER=${{secrets.DB_USER}} DB_PASSWORD=${{secrets.DB_PASSWORD}} DB_HOST=${{secrets.DB_HOST}} DB_NAME=${{secrets.DB_NAME}} DB_PORT=${{secrets.DB_PORT}} npm run migrations:run
             NODE_ENV=${{secrets.NODE_ENV}} DB_USER=${{secrets.DB_USER}} DB_PASSWORD=${{secrets.DB_PASSWORD}} DB_HOST=${{secrets.DB_HOST}} DB_NAME=${{secrets.DB_NAME}} DB_PORT=${{secrets.DB_PORT}} npm run migrations:run:seed
