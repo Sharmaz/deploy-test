@@ -16,17 +16,29 @@ jobs:
 
           script: |
             cd /var/www || exit
-            pm2 stop deploy-test
-            pm2 delete deploy-test
             if [[ -d "/var/www/test/deploy-test" ]]; then
-              echo "Directory $pathMainDir exists"
+              echo "Directory deploy-test exists"
+              pm2 stop deploy-test
+              pm2 delete deploy-test
               cd test/deploy-test/ || exit
               git pull origin main
               echo "Deployment succesful"
               npm install
-              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}\nDB_USER=${{secrets.DB_USER}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}\nDB_HOST=${{secrets.DB_HOST}}\nDB_NAME=${{secrets.DB_NAME}}\nDB_PORT=${{secrets.DB_PORT}}" > .env
+              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}\nDB_USER=${{secrets.DB_USER}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}\nDB_HOST=${{secrets.DB_HOST}}\nDB_NAME=${{secrets.DB_NAME}}\nDB_PORT=${{secrets.DB_PORT}}" >.env
               pm2 start index.js --name deploy-test
               if [[ migrations -gt $(find /var/www/test/deploy-test/src/db/migrations | wc -l) ]]; then
                 npm run migrations:run
               fi
+            else
+              echo "Directory not found"
+              mkdir test
+              cd test || exit
+              git clone git@github.com:Sharmaz/deploy-test.git
+              echo "Deployment succesful"
+              cd deploy-test || exit
+              npm install
+              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}\nDB_USER=${{secrets.DB_USER}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}\nDB_HOST=${{secrets.DB_HOST}}\nDB_NAME=${{secrets.DB_NAME}}\nDB_PORT=${{secrets.DB_PORT}}" >.env
+              pm2 start index.js --name deploy-test
+              npm run migrations:run
+              npm run migrations:run:seed
             fi
