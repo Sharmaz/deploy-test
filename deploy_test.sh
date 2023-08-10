@@ -11,10 +11,10 @@ pathMainDir="/var/www/test/deploy-test"
 migrations=$(find /var/www/test/deploy-test/src/db/migrations | wc -l)
 
 cd /var/www || exit
-pm2 stop deploy-test
-pm2 delete deploy-test
 if [[ -d pathMainDir ]]; then
   echo "Directory $pathMainDir exists"
+  pm2 stop deploy-test
+  pm2 delete deploy-test
   cd test/deploy-test/ || exit
   git pull origin main
   echo "Deployment succesful"
