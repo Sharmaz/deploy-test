@@ -15,4 +15,18 @@ jobs:
           password: ${{secrets.SSH_PASSWORD}} # User password
 
           script: |
-            ./deploy_test.sh ${{secrets.NODE_ENV}} ${{secrets.PORT}} ${{secrets.DB_USER}} ${{secrets.DB_PASSWORD}} ${{secrets.DB_HOST}} ${{secrets.DB_NAME}} ${{secrets.DB_PORT}}
+            cd /var/www || exit
+            pm2 stop deploy-test
+            pm2 delete deploy-test
+            if [[ -d "/var/www/test/deploy-test" ]]; then
+              echo "Directory $pathMainDir exists"
+              cd test/deploy-test/ || exit
+              git pull origin main
+              echo "Deployment succesful"
+              npm install
+              echo -e "NODE_ENV=${{secrets.NODE_ENV}}\nPORT=${{secrets.PORT}}\nDB_USER=${{secrets.DB_USER}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}\nDB_HOST=${{secrets.DB_HOST}}\nDB_NAME=${{secrets.DB_NAME}}\nDB_PORT=${{secrets.DB_PORT}}" > .env
+              pm2 start index.js --name deploy-test
+              if [[ migrations -gt $(find /var/www/test/deploy-test/src/db/migrations | wc -l) ]]; then
+                npm run migrations:run
+              fi
+            fi
